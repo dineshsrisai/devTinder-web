@@ -1,5 +1,9 @@
 import { useState } from "react";
 import UserCard from "../components/UserCard";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
@@ -7,12 +11,33 @@ const EditProfile = ({ user }) => {
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
   const [age, setAge] = useState(user.age);
   const [about, setAbout] = useState(user.about);
+  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+
+  const saveProfile = async () => {
+    try {
+      const res = await axios.patch(
+        BASE_URL + "/profile/edit",
+        {
+          firstName,
+          lastName,
+          photoUrl,
+          age,
+          about,
+        },
+        { withCredentials: true },
+      );
+      dispatch(addUser(res?.data?.data));
+    } catch (e) {
+      setError(e?.response?.data || e.message || "Something went wrong");
+    }
+  };
 
   return (
     <div className="flex justify-center items-stretch gap-10 my-10">
       <div className="py-4">
         <div className="card bg-base-300 w-96 shadow-sm h-full flex flex-col">
-          <div className="card-body py-5 flex-grow">
+          <div className="card-body py-5">
             <h2 className="card-title justify-center">Edit Profile</h2>
             <div className="form-control">
               <fieldset className="fieldset">
@@ -67,17 +92,20 @@ const EditProfile = ({ user }) => {
                 />
               </fieldset>
             </div>
+            <p className="text-red-500">{error}</p>
             <div className="card-actions justify-center mt-auto pt-4">
-              <button className="btn btn-info rounded-lg">Save Changes</button>
+              <button className="btn btn-info rounded-lg" onClick={saveProfile}>
+                Save Changes
+              </button>
             </div>
           </div>
         </div>
       </div>
-      
+
       <div className="py-4 w-96">
-        <UserCard 
-          user={{ firstName, lastName, photoUrl, age, about }} 
-          className="h-full w-full" 
+        <UserCard
+          user={{ firstName, lastName, photoUrl, age, about }}
+          className="h-full w-full"
         />
       </div>
     </div>
