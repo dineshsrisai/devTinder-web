@@ -10,7 +10,7 @@ const Feed = () => {
   const dispatch = useDispatch();
 
   const getFeed = async () => {
-    if (feed) return;
+    if (feed && feed.length > 0) return;
     try {
       const res = await axios.get(BASE_URL + "/feed", {
         withCredentials: true,
@@ -24,6 +24,10 @@ const Feed = () => {
   useEffect(() => {
     getFeed();
   }, []);
+
+  if (!feed || feed.length === 0) {
+    return <div className="text-center my-5">No users found</div>;
+  }
 
   return (
     feed && (
