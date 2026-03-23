@@ -10,12 +10,13 @@ const Requests = () => {
 
   const reviewRequests = async (status, _id) => {
     try {
-      const res = axios.post(
+      const res = await axios.post(
         BASE_URL + "/request/review/" + status + "/" + _id,
         {},
         { withCredentials: true },
       );
-      dispatch(removeRequests(res._id));
+      console.log("API response:", res.data);
+      dispatch(removeRequests(_id));
     } catch (e) {
       console.log(e);
     }
@@ -49,6 +50,8 @@ const Requests = () => {
       <h1 className="font-bold text-4xl mb-6">Requests</h1>
       <div className="flex flex-col gap-4">
         {requests.map((request) => {
+          const user = request.fromUserId;
+          if (!user) return null;
           const { firstName, lastName, photoUrl, age, about, gender, _id } =
             request.fromUserId;
 
