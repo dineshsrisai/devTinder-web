@@ -36,6 +36,20 @@ const Login = () => {
     }
   };
 
+  const handleSignUp = async () => {
+    try {
+      const res = await axios.post(
+        BASE_URL + "/signup",
+        { firstName, lastName, emailId, password },
+        { withCredentials: true },
+      );
+      dispatch(addUser(res?.data?.data));
+      navigate("/profile");
+    } catch (e) {
+      setError(e?.response?.data || "Something went wrong");
+    }
+  };
+
   return (
     <div className="flex justify-center items-center my-10">
       <div className="card bg-base-300 w-96 shadow-sm">
@@ -106,7 +120,10 @@ const Login = () => {
           </div>
           <p className="text-red-500">{error}</p>
           <div className="card-actions justify-center pt-3">
-            <button className="btn btn-info rounded-lg" onClick={handleLogin}>
+            <button
+              className="btn btn-info rounded-lg"
+              onClick={isLoginForm ?  handleSignUp : handleLogin}
+            >
               {!isLoginForm ? "Login" : "Sign Up"}
             </button>
           </div>

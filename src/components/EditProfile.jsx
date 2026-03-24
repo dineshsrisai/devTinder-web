@@ -85,7 +85,7 @@ const EditProfile = ({ user }) => {
                   <input
                     type="number"
                     className="input input-info rounded-lg"
-                    value={age}
+                    value={age || ""}
                     onChange={(e) => setAge(e.target.value)}
                   />
                 </fieldset>
